@@ -18,7 +18,9 @@ Add the repository containing the fixes.
 git remote add fix https://gitlab.doc.ic.ac.uk/lg4615/bayesopt_fix_typos
 ```
 
-And pull from it every time you want to include the last fixes/updates to your repository.
+And pull from it every time you want to include the last fixes/updates to your repository. 
 ```shell script
 git pull fix master
 ``` 
+
+If you notice new typos or mistakes, do not hesitate to make a merge request.
