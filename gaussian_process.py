@@ -349,7 +349,7 @@ class GaussianProcess(object):
             xlim, = boundaries
             x_gt = np.linspace(xlim[0], xlim[1], 100)
             xx = np.linspace(xlim[0] - 2, xlim[1] + 2, 200)
-            mean, std = self.get_gp_mean_std(xx)
+            mean, std = self.get_gp_mean_std(xx.reshape((-1, 1)))
             mean = mean.flatten()
             std = std.flatten()
             plt.plot(xx, mean, c='m')
