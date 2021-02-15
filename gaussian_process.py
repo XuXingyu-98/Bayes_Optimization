@@ -178,6 +178,13 @@ class GaussianProcess(object):
         - log_length_scale
         - log_noise_scale
         """
+        self.set_kernel_parameters(log_amplitude, log_length_scale, log_noise_scale)
+        n = self._covariance_matrix.shape[0]
+        sigma_n_square = np.exp(log_noise_scale) ** 2
+        K = self._covariance_matrix + sigma_n_square * np.eye(n)
+        y = self._array_objective_function_values
+        return 0.5 * y.T @ np.linalg.inv(K) @ y + 0.5 * np.log(np.linalg.det(K)) + 0.5 * n * np.log(2 * np.pi)
+
         # TODO
 
     def get_gradient_negative_log_marginal_likelihood(self,
@@ -265,6 +272,11 @@ class GaussianProcess(object):
         - mean = array of respective means predicted at the gaussian process for each point
         - covariance matrix = k(new_data_points, new_data_points) where k refers to the kernel function.
         """
+        n = new_data_points.shape[0]
+        mean, _ = self.get_gp_mean_std(new_data_points)
+        Cov = self._kernel(new_data_points, new_data_points)
+
+        
         # TODO
 
     def get_gp_mean_std(self,
@@ -282,6 +294,26 @@ class GaussianProcess(object):
         - a column numpy array of size n x 1 with the estimation of the predicted standard deviation of the gaussian process for
         all the points in data_points
         """
+        y = self.array_objective_function_values
+        K_Xnew_Xnew = self._kernel(new_data_points, new_data_points)
+        if len(self._array_dataset) == 0:
+            mean = np.zeros((new_data_points.shape[0], 1))
+            std = np.sqrt(np.diag(K_Xnew_Xnew)).reshape(-1, 1)
+            return mean, std
+        else:
+            K_Xnew_X = self._kernel(new_data_points, self.array_dataset)
+            K_X_X = self._covariance_matrix
+            n = K_X_X.shape[0]
+            sigma_n = np.exp(self._kernel.log_noise_scale)
+            # mean
+            mean = np.array(K_Xnew_X @ np.linalg.inv(K_X_X + (sigma_n ** 2)*np.eye(n)) @ y)
+            # covariance
+            cov = np.array(K_Xnew_Xnew - K_Xnew_X @ np.linalg.inv(K_X_X + (sigma_n ** 2)*np.eye(n)) @ K_Xnew_X.T)
+            # standard deviation
+            std = np.sqrt(np.diag(cov)).reshape(-1, 1)
+            return mean, std
+        
+        
         # TODO
 
     def get_mse(self,

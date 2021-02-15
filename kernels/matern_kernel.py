@@ -11,4 +11,8 @@ class MaternKernel(Kernel):
         :return: numpy array of size n_1 x n_2 for which the value at position (i, j) corresponds to the value of
         k(x_i, y_j), where k represents the kernel used.
         """
+        sigma_f_square = np.exp(self.log_amplitude) ** 2
+        l = np.exp(self.log_length_scale)
+        res = np.sqrt(3) * np.sqrt(np.sum((X - Y) ** 2)) / l
+        return sigma_f_square * (1 + res) * np.exp(-res)
         # TODO

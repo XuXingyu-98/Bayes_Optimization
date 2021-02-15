@@ -24,6 +24,20 @@ class GaussianKernel(Kernel):
         :return: numpy array of size n_1 x n_2 for which the value at position (i, j) corresponds to the value of
         k(x_i, y_j), where k represents the kernel used.
         """
+        n_1 = X.shape[0]
+        n_2 = Y.shape[0]
+           
+        K = np.zeros((n_1, n_2))
+        amplitude_latent = np.exp(self.log_amplitude)
+        length_scale = np.exp(self.log_length_scale)
+               
+        for i in range(n_1):
+            for j in range(n_2):
+                res = X[i] - Y[j]
+                res = (res ** 2).sum()
+                K[i, j] = (amplitude_latent ** 2) * np.exp(res / (-2 * (length_scale ** 2)))
+                
+        return K
         # TODO
 
     def __call__(self,
