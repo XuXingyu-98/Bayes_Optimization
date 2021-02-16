@@ -286,6 +286,7 @@ class GaussianProcess(object):
             mean = K_Xnew_X @ np.linalg.inv(K_X_X + (sigma_n ** 2) * np.eye(n)) @ y
             # covariance
             cov = np.array(K_Xnew_Xnew - K_Xnew_X @ np.linalg.inv(K_X_X + (sigma_n ** 2) * np.eye(n)) @ K_Xnew_X.T)
+        mean = mean[:, 0]
         print(mean.shape)
         return np.array([np.random.multivariate_normal(mean, cov)]).flatten()
         
