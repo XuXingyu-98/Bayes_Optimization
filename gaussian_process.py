@@ -180,6 +180,7 @@ class GaussianProcess(object):
         """
         self.set_kernel_parameters(log_amplitude, log_length_scale, log_noise_scale)
         n = self._covariance_matrix.shape[0]
+        print(self._covariance_matrix.shape)
         sigma_n_square = np.exp(log_noise_scale) ** 2
         K = self._covariance_matrix + sigma_n_square * np.eye(n)
         y = self._array_objective_function_values
