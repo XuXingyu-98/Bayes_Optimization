@@ -272,10 +272,22 @@ class GaussianProcess(object):
         - mean = array of respective means predicted at the gaussian process for each point
         - covariance matrix = k(new_data_points, new_data_points) where k refers to the kernel function.
         """
-        n = new_data_points.shape[0]
-        mean, _ = self.get_gp_mean_std(new_data_points)
-        Cov = self._kernel(new_data_points, new_data_points)
-
+        y = self.array_objective_function_values
+        K_Xnew_Xnew = self._kernel(new_data_points, new_data_points)
+        if len(self._array_dataset) == 0:
+            mean = np.zeros((new_data_points.shape[0], 1)).reshape(1, -1)
+            cov = K_Xnew_Xnew
+        else:
+            K_Xnew_X = self._kernel(new_data_points, self.array_dataset)
+            K_X_X = self._covariance_matrix
+            n = K_X_X.shape[0]
+            sigma_n = np.exp(self._kernel.log_noise_scale)
+            # mean
+            mean = K_Xnew_X @ np.linalg.inv(K_X_X + (sigma_n ** 2) * np.eye(n)) @ y
+            # covariance
+            cov = np.array(K_Xnew_Xnew - K_Xnew_X @ np.linalg.inv(K_X_X + (sigma_n ** 2) * np.eye(n)) @ K_Xnew_X.T)
+        print(mean.shape)
+        return np.array([np.random.multivariate_normal(mean, cov)]).flatten()
         
         # TODO
 
