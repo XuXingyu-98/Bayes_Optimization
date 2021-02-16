@@ -186,7 +186,7 @@ class GaussianProcess(object):
         y = self._array_objective_function_values
         res = 0.5 * y.T @ np.linalg.inv(K) @ y + 0.5 * np.log(np.linalg.det(K)) + 0.5 * n * np.log(2 * np.pi)
         print(res.shape)
-        return res[0]
+        return res[0][0]
 
         # TODO
 
