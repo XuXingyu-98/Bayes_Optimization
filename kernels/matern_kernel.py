@@ -14,7 +14,7 @@ class MaternKernel(Kernel):
         sigma_f_square = np.exp(self.log_amplitude) ** 2
         l = np.exp(self.log_length_scale)
         n_1 = X.shape[0]
-        n_2 = X.shape[0]
+        n_2 = Y.shape[0]
         K = np.zeros((n_1, n_2))
         for i in range(n_1):
             for j in range(n_2):
