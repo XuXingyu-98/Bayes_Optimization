@@ -13,6 +13,13 @@ class MaternKernel(Kernel):
         """
         sigma_f_square = np.exp(self.log_amplitude) ** 2
         l = np.exp(self.log_length_scale)
-        res = np.sqrt(3) * np.sqrt(np.sum((X - Y) ** 2)) / l
-        return sigma_f_square * (1 + res) * np.exp(-res)
+        n_1 = X.shape[0]
+        n_2 = X.shape[0]
+        K = np.zeros(n_1, n_2)
+        for i in range(n_1):
+            for j in range(n_2):
+                res = np.sqrt(3) * np.sqrt(np.sum((X[i] - Y[j]) ** 2)) / l
+                K[i, j] = sigma_f_square * (1 + res) * np.exp(-res)
+        return K
+
         # TODO
