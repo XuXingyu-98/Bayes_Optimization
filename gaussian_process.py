@@ -184,7 +184,9 @@ class GaussianProcess(object):
         sigma_n_square = np.exp(log_noise_scale) ** 2
         K = self._covariance_matrix + sigma_n_square * np.eye(n)
         y = self._array_objective_function_values
-        return 0.5 * y.T @ np.linalg.inv(K) @ y + 0.5 * np.log(np.linalg.det(K)) + 0.5 * n * np.log(2 * np.pi)
+        res = 0.5 * y.T @ np.linalg.inv(K) @ y + 0.5 * np.log(np.linalg.det(K)) + 0.5 * n * np.log(2 * np.pi)
+        print(res.shape)
+        return res[0]
 
         # TODO
 
