@@ -274,14 +274,19 @@ class GaussianProcess(object):
         """
         y = self.array_objective_function_values
         K_Xnew_Xnew = self._kernel(new_data_points, new_data_points)
-        K_Xnew_X = self._kernel(new_data_points, self.array_dataset)
-        K_X_X = self._covariance_matrix
-        n = K_X_X.shape[0]
-        sigma_n = np.exp(self._kernel.log_noise_scale)
-        # mean
-        mean = K_Xnew_X @ np.linalg.inv(K_X_X + (sigma_n ** 2) * np.eye(n)) @ y
-        # covariance
-        cov = np.array(K_Xnew_Xnew - K_Xnew_X @ np.linalg.inv(K_X_X + (sigma_n ** 2) * np.eye(n)) @ K_Xnew_X.T)
+        if len(self._array_dataset) == 0:
+            mean = np.zeros((new_data_points.shape[0], 1)).reshape(1, -1)
+            cov = K_Xnew_Xnew
+        else:
+            K_Xnew_X = self._kernel(new_data_points, self.array_dataset)
+            K_X_X = self._covariance_matrix
+            n = K_X_X.shape[0]
+            sigma_n = np.exp(self._kernel.log_noise_scale)
+            # mean
+            mean = K_Xnew_X @ np.linalg.inv(K_X_X + (sigma_n ** 2) * np.eye(n)) @ y
+            # covariance
+            cov = np.array(K_Xnew_Xnew - K_Xnew_X @ np.linalg.inv(K_X_X + (sigma_n ** 2) * np.eye(n)) @ K_Xnew_X.T)
+        mean = mean[:, 0]
         print(mean.shape)
         print(cov.shape)
         return np.array([np.random.multivariate_normal(mean.reshape(1,), cov)]).flatten()
