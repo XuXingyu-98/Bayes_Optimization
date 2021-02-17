@@ -363,7 +363,7 @@ class GaussianProcess(object):
         :param evaluations_test: array of the evaluations for all the elements in array_dataset. Its shape is hence n x 1 (it's a column vector)
         :return: the computed log predictive density on the test set.
         """
-        lpd = 0
+        lpd = 0.0
         K_X_X = self._covariance_matrix
         X = self._array_dataset
         y = self._array_objective_function_values
@@ -380,9 +380,7 @@ class GaussianProcess(object):
             print(cov)
             lpd += np.log(norm.pdf(evaluations_test[i], loc=mean[0, 0], scale=cov[0, 0]))
 
-        print(lpd)
-
-        return lpd[0]
+        return float(lpd)
 
 
 
