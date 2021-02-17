@@ -180,12 +180,11 @@ class GaussianProcess(object):
         """
         self.set_kernel_parameters(log_amplitude, log_length_scale, log_noise_scale)
         n = self._covariance_matrix.shape[0]
-        print(self._covariance_matrix.shape)
         sigma_n_square = np.exp(log_noise_scale) ** 2
         K = self._covariance_matrix + sigma_n_square * np.eye(n)
         y = self._array_objective_function_values
         res = 0.5 * y.T @ np.linalg.inv(K) @ y + 0.5 * np.log(np.linalg.det(K)) + 0.5 * n * np.log(2 * np.pi)
-        print(res.shape)
+
         return res[0][0]
 
         # TODO
@@ -364,6 +363,25 @@ class GaussianProcess(object):
         :param evaluations_test: array of the evaluations for all the elements in array_dataset. Its shape is hence n x 1 (it's a column vector)
         :return: the computed log predictive density on the test set.
         """
+        lpd = 0
+        K_X_X = self._covariance_matrix
+        X = self._array_dataset
+        y = self._array_objective_function_values
+        sigma_n_square = np.exp(self._kernel.log_noise_scale) ** 2
+        n = K_X_X.shape[0]
+
+        for i in range(len(data_points_test)):
+            x = data_points_test[i]
+            K_Xnew_X = self._kernel(x, X)
+            K_Xnew_Xnew = self._kernel(x, x)
+            mean = K_Xnew_X @ np.linalg.inv(K_X_X + sigma_n_square * np.eye(n)) @ y
+            cov = K_Xnew_Xnew + sigma_n_square - K_Xnew_X @ np.linalg.inv(K_X_X + sigma_n_square * np.eye(n)) @ K_Xnew_X.T
+            print(mean.shape)
+            print(cov.shape)
+            lpd += np.log(norm.pdf(evaluations_test[i], loc=mean, scale=cov))
+        return lpd
+
+
 
         # TODO
 
