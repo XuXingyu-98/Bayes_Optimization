@@ -391,8 +391,7 @@ class GaussianProcess(object):
         cov = K_Xnew_Xnew + sigma_n_square - K_Xnew_X @ np.linalg.inv(K_X_X + sigma_n_square * np.eye(n)) @ K_Xnew_X.T
         print(mean)
         print(cov)
-        for i in range(len(mean)):
-            lpd += np.log(norm.pdf(evaluations_test[i], loc=mean[i], scale=cov[i, i]))
+        lpd += np.log(norm.pdf(evaluations_test, loc=mean, scale=cov))
         print(lpd)
         return lpd[0]
 
