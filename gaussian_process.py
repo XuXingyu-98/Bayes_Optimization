@@ -369,7 +369,7 @@ class GaussianProcess(object):
         y = self._array_objective_function_values
         sigma_n_square = np.exp(self._kernel.log_noise_scale) ** 2
         n = K_X_X.shape[0]
-
+        """""
         for i in range(len(data_points_test)):
             x = data_points_test[i]
             K_Xnew_X = self._kernel(x, X)
@@ -384,6 +384,16 @@ class GaussianProcess(object):
 
         print(lpd.shape)
         print(lpd[0])
+        """""
+        K_Xnew_X = self._kernel(data_points_test, X)
+        K_Xnew_Xnew = self._kernel(data_points_test, data_points_test)
+        mean = K_Xnew_X @ np.linalg.inv(K_X_X + sigma_n_square * np.eye(n)) @ y
+        cov = K_Xnew_Xnew + sigma_n_square - K_Xnew_X @ np.linalg.inv(K_X_X + sigma_n_square * np.eye(n)) @ K_Xnew_X.T
+        print(mean)
+        print(cov)
+        for i in range(len(mean)):
+            lpd += np.log(norm.pdf(evaluations_test[i], loc=mean[i], scale=cov[i, i]))
+        print(lpd)
         return lpd[0]
 
 
