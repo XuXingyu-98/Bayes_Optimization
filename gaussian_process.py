@@ -392,8 +392,7 @@ class GaussianProcess(object):
         print(mean)
         print(cov)
         lpd += np.log(norm.pdf(evaluations_test, loc=mean, scale=cov))
-        print(lpd)
-        return lpd[0]
+        return np.sum(np.log(lpd))
 
 
 
