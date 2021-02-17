@@ -384,7 +384,7 @@ class GaussianProcess(object):
 
         print(lpd.shape)
         print(lpd[0])
-        return lpd
+        return lpd[0]
 
 
 
