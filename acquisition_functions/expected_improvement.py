@@ -24,7 +24,7 @@ class ExpectedImprovement(AcquisitionFunction):
         f = min(y)
         X = data_points
         n = X.shape[0]
-        mean, std = GaussianProcess.get_gp_mean_std(data_points)
+        mean, std = gaussian_process.get_gp_mean_std(data_points)
         EI = np.zeros(n)
         for i in range(n):
             EI[i] = (f - mean[i]) * norm.cdf(f, mean[i], std[i]) + std[i] * norm.pdf(f, mean[i], std[i])
