@@ -20,7 +20,7 @@ class ExpectedImprovement(AcquisitionFunction):
         :return: a numpy array of shape n x 1 (or a float) representing the estimation of the acquisition function at
         each point
         """
-        y = GaussianProcess._array_objective_function_values
+        y = gaussian_process.array_objective_function_values
         f = min(y)
         X = data_points
         n = X.shape[0]
