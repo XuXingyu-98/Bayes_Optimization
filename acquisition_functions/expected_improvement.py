@@ -27,7 +27,8 @@ class ExpectedImprovement(AcquisitionFunction):
         mean, std = gaussian_process.get_gp_mean_std(data_points)
         EI = np.zeros(n)
         for i in range(n):
-            EI[i] = (f - mean[i]) * norm.cdf(f, mean[i], std[i]) + std[i] * norm.pdf(f, mean[i], std[i])
+            gamma = (f - mean[i]) / std[i]
+            EI[i] = (f - mean[i]) * norm.cdf(gamma) + std[i] * norm.pdf(gamma)
 
         return EI.reshape(n, 1)
 
