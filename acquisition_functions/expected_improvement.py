@@ -20,6 +20,17 @@ class ExpectedImprovement(AcquisitionFunction):
         :return: a numpy array of shape n x 1 (or a float) representing the estimation of the acquisition function at
         each point
         """
+        y = GaussianProcess._array_objective_function_values
+        f = min(y)
+        X = data_points
+        n = X.shape[0]
+        mean, std = GaussianProcess.get_gp_mean_std(data_points)
+        EI = np.zeros(n)
+        for i in range(n):
+            EI[i] = (f - mean[i]) * norm.cdf(f, mean[i], std[i]) + std[i] * norm.pdf(f, mean[i], std[i])
+
+        return EI.reshape(n, 1)
+
 
         # TODO
 
