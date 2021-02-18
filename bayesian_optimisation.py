@@ -87,9 +87,13 @@ class BayesianOptimisation(object):
         :param arg_max_acquisition_function: the previously computed argmax of the acquisition function
         :return: the next computed arg_max of the acquisition function after having updated the Gaussian Process
         """
-        x = self._acquisition_function.compute_arg_max
-        self._gaussian_process.array_dataset.append(x, arg_max_acquisition_function)
-        return x
+        x = arg_max_acquisition_function
+        y = self._objective_function.evaluate(x)
+        for i in range(x.shape[0]):
+            self._gaussian_process.add_data_point(x[i], y[i])
+        self._gaussian_process.optimise_parameters()
+        x_next = self._acquisition_function.compute_arg_max(self._gaussian_process, self._objective_function)
+        return x_next
 
         # TODO
 
